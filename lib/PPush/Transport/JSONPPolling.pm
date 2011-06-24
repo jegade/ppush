@@ -1,9 +1,9 @@
-package PocketIO::Transport::JSONPPolling;
+package Ppush::Transport::JSONPPolling;
 
 use strict;
 use warnings;
 
-use base 'PocketIO::Transport::BasePolling';
+use base 'Ppush::Transport::BasePolling';
 
 sub name {'jsonp-polling'}
 
@@ -42,11 +42,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::JSONPPolling - JSONPPolling transport
+Ppush::JSONPPolling - JSONPPolling transport
 
 =head1 DESCRIPTION
 
-L<PocketIO::JSONPPolling> is a C<jsonp-polling> transport
+L<Ppush::JSONPPolling> is a C<jsonp-polling> transport
 implementation.
 
 =head1 METHODS

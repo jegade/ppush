@@ -1,4 +1,4 @@
-package PocketIO::Transport::Base;
+package Ppush::Transport::Base;
 
 use strict;
 use warnings;
@@ -9,8 +9,8 @@ use Try::Tiny;
 use Scalar::Util qw(weaken);
 
 use Plack::Request;
-use PocketIO::Handle;
-use PocketIO::Pool;
+use Ppush::Handle;
+use Ppush::Pool;
 
 sub new {
     my $class = shift;
@@ -29,13 +29,13 @@ sub env { shift->{req}->{env} }
 sub add_connection {
     my $self = shift;
 
-    return PocketIO::Pool->add_connection(type => $self->name, req => $self->{req}, @_);
+    return Ppush::Pool->add_connection(type => $self->name, req => $self->{req}, @_);
 }
 
 sub remove_connection {
     my $self = shift;
 
-    PocketIO::Pool->remove_connection($_[0]);
+    Ppush::Pool->remove_connection($_[0]);
 
     return $self;
 }
@@ -43,7 +43,7 @@ sub remove_connection {
 sub find_connection {
     my $self = shift;
 
-    return PocketIO::Pool->find_connection(@_);
+    return Ppush::Pool->find_connection(@_);
 }
 
 sub client_connected {
@@ -110,7 +110,7 @@ sub _get_logger {
 sub _build_handle {
     my $self = shift;
 
-    return PocketIO::Handle->new(@_);
+    return Ppush::Handle->new(@_);
 }
 
 1;
@@ -118,11 +118,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::Base - Base class for transports
+Ppush::Base - Base class for transports
 
 =head1 DESCRIPTION
 
-L<PocketIO::Base> is a base class for the transports.
+L<Ppush::Base> is a base class for the transports.
 
 =head1 METHODS
 

@@ -1,11 +1,11 @@
-package PocketIO::Pool;
+package Ppush::Pool;
 
 use strict;
 use warnings;
 
 use Scalar::Util qw(blessed);
 
-use PocketIO::Connection;
+use Ppush::Connection;
 
 use constant DEBUG => $ENV{POCKETIO_POOL_DEBUG};
 
@@ -71,7 +71,7 @@ sub _new_instance {
 sub _build_connection {
     my $self = shift;
 
-    return PocketIO::Connection->new(@_,
+    return Ppush::Connection->new(@_,
         on_connect_failed => sub { $self->remove_connection(@_) });
 }
 
@@ -81,11 +81,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::Pool - Connection pool
+Ppush::Pool - Connection pool
 
 =head1 DESCRIPTION
 
-L<PocketIO::Pool> is a singleton connection pool.
+L<Ppush::Pool> is a singleton connection pool.
 
 =head1 METHODS
 

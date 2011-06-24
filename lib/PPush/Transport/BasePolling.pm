@@ -1,11 +1,11 @@
-package PocketIO::Transport::BasePolling;
+package Ppush::Transport::BasePolling;
 
 use strict;
 use warnings;
 
-use base 'PocketIO::Transport::Base';
+use base 'Ppush::Transport::Base';
 
-use PocketIO::Response::Chunked;
+use Ppush::Response::Chunked;
 
 sub _dispatch_init {
     my $self = shift;
@@ -84,7 +84,7 @@ sub _dispatch_send {
 
     $conn->read($data);
 
-    return PocketIO::Response::Chunked->finalize;
+    return Ppush::Response::Chunked->finalize;
 }
 
 sub _write {
@@ -113,7 +113,7 @@ __END__
 
 =head1 NAME
 
-PocketIO::Polling - Basic class for polling transports
+Ppush::Polling - Basic class for polling transports
 
 =head1 DESCRIPTION
 

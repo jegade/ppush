@@ -1,4 +1,4 @@
-package PocketIO::Handle;
+package Ppush::Handle;
 
 use strict;
 use warnings;
@@ -134,11 +134,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::Handle - Handle
+Ppush::Handle - Handle
 
 =head1 DESCRIPTION
 
-L<PocketIO::Handle> is a wrapper on top of
+L<Ppush::Handle> is a wrapper on top of
 L<AnyEvent::Handle>.
 
 =head1 METHODS

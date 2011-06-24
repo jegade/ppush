@@ -1,9 +1,9 @@
-package PocketIO::Transport::XHRPolling;
+package Ppush::Transport::XHRPolling;
 
 use strict;
 use warnings;
 
-use base 'PocketIO::Transport::BasePolling';
+use base 'Ppush::Transport::BasePolling';
 
 sub name {'xhr-polling'}
 
@@ -33,11 +33,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::XHRPolling - XHRPolling transport
+Ppush::XHRPolling - XHRPolling transport
 
 =head1 DESCRIPTION
 
-L<PocketIO::XHRPolling> is a C<xhr-polling> transport
+L<Ppush::XHRPolling> is a C<xhr-polling> transport
 implementation.
 
 =head1 METHODS

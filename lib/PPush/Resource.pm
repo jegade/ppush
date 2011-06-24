@@ -1,13 +1,13 @@
-package PocketIO::Resource;
+package Ppush::Resource;
 
 use strict;
 use warnings;
 
-use PocketIO::Transport::Htmlfile;
-use PocketIO::Transport::JSONPPolling;
-use PocketIO::Transport::WebSocket;
-use PocketIO::Transport::XHRMultipart;
-use PocketIO::Transport::XHRPolling;
+use Ppush::Transport::Htmlfile;
+use Ppush::Transport::JSONPPolling;
+use Ppush::Transport::WebSocket;
+use Ppush::Transport::XHRMultipart;
+use Ppush::Transport::XHRPolling;
 
 use constant DEBUG => $ENV{POCKETIO_RESOURCE_DEBUG};
 
@@ -45,7 +45,7 @@ sub _build_transport {
 
     return unless exists $TRANSPORTS{$type};
 
-    my $class = "PocketIO::Transport::$TRANSPORTS{$type}";
+    my $class = "Ppush::Transport::$TRANSPORTS{$type}";
 
     DEBUG && warn "Building $class\n";
 
@@ -57,11 +57,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::Resource - Resource class
+Ppush::Resource - Resource class
 
 =head1 DESCRIPTION
 
-L<PocketIO::Resource> is a transport dispatcher.
+L<Ppush::Resource> is a transport dispatcher.
 
 =head1 METHODS
 

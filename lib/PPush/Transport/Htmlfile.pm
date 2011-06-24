@@ -1,12 +1,12 @@
-package PocketIO::Transport::Htmlfile;
+package Ppush::Transport::Htmlfile;
 
 use strict;
 use warnings;
 
-use base 'PocketIO::Transport::Base';
+use base 'Ppush::Transport::Base';
 
 use HTTP::Body;
-use PocketIO::Response::Chunked;
+use Ppush::Response::Chunked;
 
 sub name {'htmlfile'}
 
@@ -95,7 +95,7 @@ sub _dispatch_send {
 
     $conn->read($data);
 
-    return PocketIO::Response::Chunked->finalize;
+    return Ppush::Response::Chunked->finalize;
 }
 
 sub _wrap_into_script {
@@ -111,11 +111,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::Htmlfile - Htmlfile transport
+Ppush::Htmlfile - Htmlfile transport
 
 =head1 DESCRIPTION
 
-L<PocketIO::Htmlfile> is a C<htmlfile> transport
+L<Ppush::Htmlfile> is a C<htmlfile> transport
 implementation.
 
 =cut

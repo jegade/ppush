@@ -1,14 +1,14 @@
-package PocketIO::Transport::WebSocket;
+package Ppush::Transport::WebSocket;
 
 use strict;
 use warnings;
 
-use base 'PocketIO::Transport::Base';
+use base 'Ppush::Transport::Base';
 
 use Protocol::WebSocket::Frame;
 use Protocol::WebSocket::Handshake::Server;
 
-use PocketIO::Handle;
+use Ppush::Handle;
 
 sub name {'websocket'}
 
@@ -83,11 +83,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::WebSocket - WebSocket transport
+Ppush::WebSocket - WebSocket transport
 
 =head1 DESCRIPTION
 
-L<PocketIO::WebSocket> is a WebSocket transport implementation.
+L<Ppush::WebSocket> is a WebSocket transport implementation.
 
 =head1 SEE ALSO
 

@@ -1,4 +1,4 @@
-package PocketIO;
+package PPush;
 
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ our $VERSION = '0.00904';
 use Plack::Util ();
 use Plack::Util::Accessor qw(resource handler class instance method);
 
-use PocketIO::Resource;
+use PPush::Resource;
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -24,7 +24,7 @@ sub call {
     my $self = shift;
     my ($env) = @_;
 
-    return PocketIO::Resource->dispatch($env, $self->handler)
+    return PPush::Resource->dispatch($env, $self->handler)
       || [400, ['Content-Type' => 'text/plain'], ['Bad request']];
 }
 
@@ -49,14 +49,14 @@ __END__
 
 =head1 NAME
 
-PocketIO - Socket.IO middleware
+PPush -Websocket Pusher 
 
 =head1 SYNOPSIS
 
     use Plack::Builder;
 
     builder {
-        enable "SocketIO", handler => sub {
+        enable "PPush", handler => sub {
             my $self = shift;
 
             $self->on_message(
@@ -77,19 +77,15 @@ PocketIO - Socket.IO middleware
     # or
 
     builder {
-        enable "SocketIO", class => 'MyApp::Handler', method => 'run';
+        enable "PPush", class => 'MyApp::Handler', method => 'run';
 
         $app;
     };
 
 =head1 DESCRIPTION
 
-L<PocketIO> is a server implmentation of SocketIO in Perl.
+L<PPush> is a server implmentatation for websockets in Perl.
 
-=head2 SocketIO
-
-More information about SocketIO you can find on the website L<http://socket.io/>, or
-on the GitHub L<https://github.com/LearnBoost/Socket.IO>.
 
 =head2 Transports
 
@@ -97,10 +93,6 @@ All the transports are supported.
 
     WebSocket
     Adobe(R) Flash(R) Socket
-    AJAX long polling
-    AJAX multipart streaming
-    Forever Iframe
-    JSONP Polling
 
 =head2 TLS/SSL
 
@@ -113,7 +105,7 @@ recommended.
 
 =item resource
 
-    enable "SocketIO",
+    enable "PPush",
         resource => 'socket.io', ...;
 
 Specifies the path prefix under which all the requests are handled. This is done
@@ -121,7 +113,7 @@ so the rest of your application won't interfere with Socket.IO specific calls.
 
 =item handler
 
-    enable "SocketIO",
+    enable "PPush",
         handler => sub {
             my $socket = shift;
 
@@ -134,12 +126,12 @@ so the rest of your application won't interfere with Socket.IO specific calls.
 
 =item class or instance, method
 
-    enable "SocketIO",
+    enable "PPush",
         class => 'MyHandler', method => 'run';
 
     # or
 
-    enable "SocketIO",
+    enable "PPush",
         instance => MyHandler->new(foo => 'bar'), method => 'run';
 
     package MyHandler;
@@ -165,19 +157,19 @@ subroutine.
 
 =head2 Repository
 
-    http://github.com/vti/plack-middleware-socketio
+    http://github.com/jegade/ppush
 
 =head1 CREDITS
 
-Socket.IO author(s) and contributors.
+Based on PocketIO from Viacheslav Tykhanovskyi, C<vti@cpan.org>.
 
 =head1 AUTHOR
 
-Viacheslav Tykhanovskyi, C<vti@cpan.org>.
+Jens Gassmannm, C<jegade@cpan.org>.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2011, Viacheslav Tykhanovskyi
+Copyright (C) 2011, Jens Gassmann
 
 This program is free software, you can redistribute it and/or modify it under
 the terms of the Artistic License version 2.0.

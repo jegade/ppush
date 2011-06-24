@@ -1,12 +1,12 @@
-package PocketIO::Transport::XHRMultipart;
+package Ppush::Transport::XHRMultipart;
 
 use strict;
 use warnings;
 
-use base 'PocketIO::Transport::Base';
+use base 'Ppush::Transport::Base';
 
-use PocketIO::Handle;
-use PocketIO::Response::Chunked;
+use Ppush::Handle;
+use Ppush::Response::Chunked;
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -95,7 +95,7 @@ sub _dispatch_send {
 
     $conn->read($data);
 
-    return PocketIO::Response::Chunked->finalize;
+    return Ppush::Response::Chunked->finalize;
 }
 
 1;
@@ -103,11 +103,11 @@ __END__
 
 =head1 NAME
 
-PocketIO::XHRMultipart - XHRMultipart transport
+Ppush::XHRMultipart - XHRMultipart transport
 
 =head1 DESCRIPTION
 
-L<PocketIO::XHRMultipart> is a C<xhr-multipart> transport
+L<Ppush::XHRMultipart> is a C<xhr-multipart> transport
 implementation.
 
 =head1 METHODS

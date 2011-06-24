@@ -1,4 +1,4 @@
-package PocketIO::Response::Chunked;
+package Ppush::Response::Chunked;
 
 use strict;
 use warnings;
