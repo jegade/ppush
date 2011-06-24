@@ -1,4 +1,4 @@
-package PPush::Transport::Base;
+package PPush::Transport;
 
 use strict;
 use warnings;
@@ -11,6 +11,9 @@ use Scalar::Util qw(weaken);
 use Plack::Request;
 use PPush::Handle;
 use PPush::Pool;
+
+use Protocol::WebSocket::Frame;
+use Protocol::WebSocket::Handshake::Server;
 
 sub new {
     my $class = shift;
@@ -26,10 +29,79 @@ sub new {
 sub req { shift->{req} }
 sub env { shift->{req}->{env} }
 
+
+sub dispatch {
+    my $self = shift;
+    my ($cb) = @_;
+
+    my $fh = $self->req->env->{'psgix.io'};
+    return unless $fh;
+
+    my $hs = Protocol::WebSocket::Handshake::Server->new_from_psgi($self->req->env);
+    return unless $hs->parse($fh);
+
+    return unless $hs->is_done;
+
+    my $handle = $self->_build_handle($fh);
+    my $frame = Protocol::WebSocket::Frame->new;
+
+    return sub {
+        my $respond = shift;
+
+        $handle->write(
+            $hs->to_string => sub {
+                my $handle = shift;
+
+                my $conn = $self->add_connection(on_connect => $cb);
+
+                my $close_cb = sub {
+                    $handle->close;
+                    $self->client_disconnected($conn);
+                };
+                $handle->on_eof($close_cb);
+                $handle->on_error($close_cb);
+
+                $handle->on_heartbeat(sub { $conn->send_heartbeat });
+
+                $handle->on_read(
+                    sub {
+                        $frame->append($_[1]);
+
+                        while (my $message = $frame->next_bytes) {
+                            $conn->read($message);
+                        }
+                    }
+                );
+
+                $conn->on_write(
+                    sub {
+                        my $bytes = $self->_build_frame($_[1]);
+
+                        $handle->write($bytes);
+                    }
+                );
+
+                $self->client_connected($conn);
+
+                $conn->send_id_message($conn->id);
+            }
+        );
+    };
+}
+
+sub _build_frame {
+    my $self = shift;
+    my ($bytes) = @_;
+
+    return Protocol::WebSocket::Frame->new($bytes)->to_bytes;
+}
+
+
+
 sub add_connection {
     my $self = shift;
 
-    return PPush::Pool->add_connection(type => $self->name, req => $self->{req}, @_);
+    return PPush::Pool->add_connection( req => $self->{req}, @_);
 }
 
 sub remove_connection {
@@ -80,8 +152,8 @@ sub _log_client_connected {
     $logger->(
         {   level   => 'debug',
             message => sprintf(
-                "Client '%s' connected via '%s'",
-                $conn->id, $conn->type
+                "Client '%s' connected via websocket",
+                $conn->id
             )
         }
     );

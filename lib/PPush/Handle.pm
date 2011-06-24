@@ -5,7 +5,7 @@ use warnings;
 
 use AnyEvent::Handle;
 
-use constant DEBUG => $ENV{POCKETIO_HANDLE_DEBUG};
+use constant DEBUG => $ENV{PPUSH_HANDLE_DEBUG};
 
 sub new {
     my $class = shift;

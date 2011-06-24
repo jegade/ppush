@@ -10,7 +10,7 @@ use Try::Tiny;
 
 use PPush::Pool;
 
-use constant DEBUG => $ENV{POCKETIO_CONNECTION_DEBUG};
+use constant DEBUG => $ENV{PPUSH_CONNECTION_DEBUG};
 
 sub new {
     my $class = shift;
@@ -38,8 +38,6 @@ sub new {
 
     return $self;
 }
-
-sub type { shift->{type} }
 
 sub is_connected { $_[0]->{is_connected} }
 
@@ -321,8 +319,6 @@ incapsulates all the logic for bulding and parsing Socket.IO messages.
 =head2 C<new>
 
 =head2 C<id>
-
-=head2 C<type>
 
 =head2 C<disconnect>
 

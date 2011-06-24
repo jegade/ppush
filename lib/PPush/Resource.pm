@@ -3,53 +3,18 @@ package PPush::Resource;
 use strict;
 use warnings;
 
-use PPush::Transport::Htmlfile;
-use PPush::Transport::JSONPPolling;
-use PPush::Transport::WebSocket;
-use PPush::Transport::XHRMultipart;
-use PPush::Transport::XHRPolling;
+use PPush::Transport;
 
-use constant DEBUG => $ENV{POCKETIO_RESOURCE_DEBUG};
-
-my %TRANSPORTS = (
-    'xhr-multipart' => 'XHRMultipart',
-    'xhr-polling'   => 'XHRPolling',
-    'jsonp-polling' => 'JSONPPolling',
-    'flashsocket'   => 'WebSocket',
-    'websocket'     => 'WebSocket',
-    'htmlfile'      => 'Htmlfile'
-);
+use constant DEBUG => $ENV{PPUSH_RESOURCE_DEBUG};
 
 sub dispatch {
     my $self = shift;
     my ($env, $cb) = @_;
 
-    my ($type) = $env->{PATH_INFO} =~ m{^/\d+/([^\/]+)/?};
+    my $transport = PPush::Transport->new( env => $enc ) ;
+    return unless $transport;
+    return $transport->dispatch($cb);
 
-    if ( $type ) {
-
-        my $transport = $self->_build_transport($type, env => $env);
-        return unless $transport;
-
-        return $transport->dispatch($cb);
-
-    } else {
-
-        
-    }
-}
-
-sub _build_transport {
-    my $self = shift;
-    my ($type, @args) = @_;
-
-    return unless exists $TRANSPORTS{$type};
-
-    my $class = "PPush::Transport::$TRANSPORTS{$type}";
-
-    DEBUG && warn "Building $class\n";
-
-    return $class->new(@args);
 }
 
 1;
