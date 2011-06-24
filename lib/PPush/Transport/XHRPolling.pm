@@ -1,9 +1,9 @@
-package Ppush::Transport::XHRPolling;
+package PPush::Transport::XHRPolling;
 
 use strict;
 use warnings;
 
-use base 'Ppush::Transport::BasePolling';
+use base 'PPush::Transport::BasePolling';
 
 sub name {'xhr-polling'}
 
@@ -33,11 +33,11 @@ __END__
 
 =head1 NAME
 
-Ppush::XHRPolling - XHRPolling transport
+PPush::XHRPolling - XHRPolling transport
 
 =head1 DESCRIPTION
 
-L<Ppush::XHRPolling> is a C<xhr-polling> transport
+L<PPush::XHRPolling> is a C<xhr-polling> transport
 implementation.
 
 =head1 METHODS

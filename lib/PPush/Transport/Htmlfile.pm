@@ -1,12 +1,12 @@
-package Ppush::Transport::Htmlfile;
+package PPush::Transport::Htmlfile;
 
 use strict;
 use warnings;
 
-use base 'Ppush::Transport::Base';
+use base 'PPush::Transport::Base';
 
 use HTTP::Body;
-use Ppush::Response::Chunked;
+use PPush::Response::Chunked;
 
 sub name {'htmlfile'}
 
@@ -95,7 +95,7 @@ sub _dispatch_send {
 
     $conn->read($data);
 
-    return Ppush::Response::Chunked->finalize;
+    return PPush::Response::Chunked->finalize;
 }
 
 sub _wrap_into_script {
@@ -111,11 +111,11 @@ __END__
 
 =head1 NAME
 
-Ppush::Htmlfile - Htmlfile transport
+PPush::Htmlfile - Htmlfile transport
 
 =head1 DESCRIPTION
 
-L<Ppush::Htmlfile> is a C<htmlfile> transport
+L<PPush::Htmlfile> is a C<htmlfile> transport
 implementation.
 
 =cut

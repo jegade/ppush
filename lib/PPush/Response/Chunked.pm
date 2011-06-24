@@ -1,4 +1,4 @@
-package Ppush::Response::Chunked;
+package PPush::Response::Chunked;
 
 use strict;
 use warnings;

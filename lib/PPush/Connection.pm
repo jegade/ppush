@@ -1,4 +1,4 @@
-package Ppush::Connection;
+package PPush::Connection;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ use JSON ();
 use Encode ();
 use Try::Tiny;
 
-use Ppush::Pool;
+use PPush::Pool;
 
 use constant DEBUG => $ENV{POCKETIO_CONNECTION_DEBUG};
 
@@ -218,7 +218,7 @@ sub send_broadcast {
     my $self = shift;
     my ($message) = @_;
 
-    foreach my $conn (Ppush::Pool->connections) {
+    foreach my $conn (PPush::Pool->connections) {
         next if $conn->id eq $self->id;
         next unless $conn->is_connected;
 
@@ -309,11 +309,11 @@ __END__
 
 =head1 NAME
 
-Ppush::Connection - Connection class
+PPush::Connection - Connection class
 
 =head1 DESCRIPTION
 
-L<Ppush::Connection> is a connection class that
+L<PPush::Connection> is a connection class that
 incapsulates all the logic for bulding and parsing Socket.IO messages.
 
 =head1 METHODS

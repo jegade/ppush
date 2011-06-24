@@ -1,14 +1,14 @@
-package Ppush::Transport::WebSocket;
+package PPush::Transport::WebSocket;
 
 use strict;
 use warnings;
 
-use base 'Ppush::Transport::Base';
+use base 'PPush::Transport::Base';
 
 use Protocol::WebSocket::Frame;
 use Protocol::WebSocket::Handshake::Server;
 
-use Ppush::Handle;
+use PPush::Handle;
 
 sub name {'websocket'}
 
@@ -83,11 +83,11 @@ __END__
 
 =head1 NAME
 
-Ppush::WebSocket - WebSocket transport
+PPush::WebSocket - WebSocket transport
 
 =head1 DESCRIPTION
 
-L<Ppush::WebSocket> is a WebSocket transport implementation.
+L<PPush::WebSocket> is a WebSocket transport implementation.
 
 =head1 SEE ALSO
 

@@ -1,4 +1,4 @@
-package Ppush::Handle;
+package PPush::Handle;
 
 use strict;
 use warnings;
@@ -134,11 +134,11 @@ __END__
 
 =head1 NAME
 
-Ppush::Handle - Handle
+PPush::Handle - Handle
 
 =head1 DESCRIPTION
 
-L<Ppush::Handle> is a wrapper on top of
+L<PPush::Handle> is a wrapper on top of
 L<AnyEvent::Handle>.
 
 =head1 METHODS

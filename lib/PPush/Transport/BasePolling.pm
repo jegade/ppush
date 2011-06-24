@@ -1,11 +1,11 @@
-package Ppush::Transport::BasePolling;
+package PPush::Transport::BasePolling;
 
 use strict;
 use warnings;
 
-use base 'Ppush::Transport::Base';
+use base 'PPush::Transport::Base';
 
-use Ppush::Response::Chunked;
+use PPush::Response::Chunked;
 
 sub _dispatch_init {
     my $self = shift;
@@ -84,7 +84,7 @@ sub _dispatch_send {
 
     $conn->read($data);
 
-    return Ppush::Response::Chunked->finalize;
+    return PPush::Response::Chunked->finalize;
 }
 
 sub _write {
@@ -113,7 +113,7 @@ __END__
 
 =head1 NAME
 
-Ppush::Polling - Basic class for polling transports
+PPush::Polling - Basic class for polling transports
 
 =head1 DESCRIPTION
 

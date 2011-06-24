@@ -1,11 +1,11 @@
-package Ppush::Pool;
+package PPush::Pool;
 
 use strict;
 use warnings;
 
 use Scalar::Util qw(blessed);
 
-use Ppush::Connection;
+use PPush::Connection;
 
 use constant DEBUG => $ENV{POCKETIO_POOL_DEBUG};
 
@@ -71,7 +71,7 @@ sub _new_instance {
 sub _build_connection {
     my $self = shift;
 
-    return Ppush::Connection->new(@_,
+    return PPush::Connection->new(@_,
         on_connect_failed => sub { $self->remove_connection(@_) });
 }
 
@@ -81,11 +81,11 @@ __END__
 
 =head1 NAME
 
-Ppush::Pool - Connection pool
+PPush::Pool - Connection pool
 
 =head1 DESCRIPTION
 
-L<Ppush::Pool> is a singleton connection pool.
+L<PPush::Pool> is a singleton connection pool.
 
 =head1 METHODS
 

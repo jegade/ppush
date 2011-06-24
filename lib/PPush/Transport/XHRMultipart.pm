@@ -1,12 +1,12 @@
-package Ppush::Transport::XHRMultipart;
+package PPush::Transport::XHRMultipart;
 
 use strict;
 use warnings;
 
-use base 'Ppush::Transport::Base';
+use base 'PPush::Transport::Base';
 
-use Ppush::Handle;
-use Ppush::Response::Chunked;
+use PPush::Handle;
+use PPush::Response::Chunked;
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -95,7 +95,7 @@ sub _dispatch_send {
 
     $conn->read($data);
 
-    return Ppush::Response::Chunked->finalize;
+    return PPush::Response::Chunked->finalize;
 }
 
 1;
@@ -103,11 +103,11 @@ __END__
 
 =head1 NAME
 
-Ppush::XHRMultipart - XHRMultipart transport
+PPush::XHRMultipart - XHRMultipart transport
 
 =head1 DESCRIPTION
 
-L<Ppush::XHRMultipart> is a C<xhr-multipart> transport
+L<PPush::XHRMultipart> is a C<xhr-multipart> transport
 implementation.
 
 =head1 METHODS

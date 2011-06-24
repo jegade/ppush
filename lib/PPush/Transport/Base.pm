@@ -1,4 +1,4 @@
-package Ppush::Transport::Base;
+package PPush::Transport::Base;
 
 use strict;
 use warnings;
@@ -9,8 +9,8 @@ use Try::Tiny;
 use Scalar::Util qw(weaken);
 
 use Plack::Request;
-use Ppush::Handle;
-use Ppush::Pool;
+use PPush::Handle;
+use PPush::Pool;
 
 sub new {
     my $class = shift;
@@ -29,13 +29,13 @@ sub env { shift->{req}->{env} }
 sub add_connection {
     my $self = shift;
 
-    return Ppush::Pool->add_connection(type => $self->name, req => $self->{req}, @_);
+    return PPush::Pool->add_connection(type => $self->name, req => $self->{req}, @_);
 }
 
 sub remove_connection {
     my $self = shift;
 
-    Ppush::Pool->remove_connection($_[0]);
+    PPush::Pool->remove_connection($_[0]);
 
     return $self;
 }
@@ -43,7 +43,7 @@ sub remove_connection {
 sub find_connection {
     my $self = shift;
 
-    return Ppush::Pool->find_connection(@_);
+    return PPush::Pool->find_connection(@_);
 }
 
 sub client_connected {
@@ -110,7 +110,7 @@ sub _get_logger {
 sub _build_handle {
     my $self = shift;
 
-    return Ppush::Handle->new(@_);
+    return PPush::Handle->new(@_);
 }
 
 1;
@@ -118,11 +118,11 @@ __END__
 
 =head1 NAME
 
-Ppush::Base - Base class for transports
+PPush::Base - Base class for transports
 
 =head1 DESCRIPTION
 
-L<Ppush::Base> is a base class for the transports.
+L<PPush::Base> is a base class for the transports.
 
 =head1 METHODS
 

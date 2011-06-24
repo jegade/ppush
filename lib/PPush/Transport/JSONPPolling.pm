@@ -1,9 +1,9 @@
-package Ppush::Transport::JSONPPolling;
+package PPush::Transport::JSONPPolling;
 
 use strict;
 use warnings;
 
-use base 'Ppush::Transport::BasePolling';
+use base 'PPush::Transport::BasePolling';
 
 sub name {'jsonp-polling'}
 
@@ -42,11 +42,11 @@ __END__
 
 =head1 NAME
 
-Ppush::JSONPPolling - JSONPPolling transport
+PPush::JSONPPolling - JSONPPolling transport
 
 =head1 DESCRIPTION
 
-L<Ppush::JSONPPolling> is a C<jsonp-polling> transport
+L<PPush::JSONPPolling> is a C<jsonp-polling> transport
 implementation.
 
 =head1 METHODS
