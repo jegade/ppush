@@ -10,10 +10,10 @@ use ExtUtils::MakeMaker;
 my ($mm) = $ExtUtils::MakeMaker::VERSION =~ /^([^_]+)/;
 
 WriteMakefile(
-    NAME         => 'PocketIO',
-    VERSION_FROM => 'lib/PocketIO.pm',
-    ABSTRACT     => 'Socket.IO Plack app',
-    AUTHOR       => 'Viacheslav Tykhanovskyi <vti@cpan.org>',
+    NAME         => 'PPush',
+    VERSION_FROM => 'lib/PPush.pm',
+    ABSTRACT     => 'Websocket Plack app',
+    AUTHOR       => 'Jens Gassmann <jegade@cpan.org>',
 
     ($mm < 6.3002 ? () : ('LICENSE' => 'artistic_2')),
 
@@ -24,9 +24,9 @@ WriteMakefile(
                 resources => {
                     license => 'http://dev.perl.org/licenses/',
                     repository =>
-                      'http://github.com/vti/pocketio',
+                      'http://github.com/jegade/ppush',
                     bugtracker =>
-                      'http://github.com/vti/pocketio/issues'
+                      'http://github.com/jegade/ppush/issues'
                 },
                 no_index => {directory => [qw/t/]}
             },

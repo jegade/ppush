@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use AnyEvent;
-use JSON ();
+use JSON   ();
 use Encode ();
 use Try::Tiny;
 
@@ -128,13 +128,13 @@ sub id {
     return $self->{id};
 }
 
-sub on_message    { shift->on(message    => @_) }
-sub on_disconnect { shift->on(disconnect => @_) }
-sub on_error      { shift->on(error      => @_) }
-sub on_write      { shift->on(write      => @_) }
+sub on_message    { shift->on( message    => @_ ) }
+sub on_disconnect { shift->on( disconnect => @_ ) }
+sub on_error      { shift->on( error      => @_ ) }
+sub on_write      { shift->on( write      => @_ ) }
 
 sub on {
-    my $self = shift;
+    my $self  = shift;
     my $event = shift;
 
     my $name = "on_$event";
@@ -156,10 +156,10 @@ sub read {
 
     return $self unless defined $data;
 
-    $self->{data} .= Encode::decode('UTF-8', $data);
+    $self->{data} .= Encode::decode( 'UTF-8', $data );
 
-    while (my $message = $self->_parse_data) {
-        $self->on('message')->($self, $message);
+    while ( my $message = $self->_parse_data ) {
+        $self->on('message')->( $self, $message );
     }
 
     return $self;
@@ -170,7 +170,7 @@ sub send_heartbeat {
 
     $self->{heartbeat}++;
 
-    return $self->send_message('~h~' . $self->{heartbeat});
+    return $self->send_message( '~h~' . $self->{heartbeat} );
 }
 
 sub send_message {
@@ -179,10 +179,9 @@ sub send_message {
 
     $message = $self->build_message($message);
 
-    if ($self->on_write) {
-        $self->on('write')->($self, $message);
-    }
-    else {
+    if ( $self->on_write ) {
+        $self->on('write')->( $self, $message );
+    } else {
         $self->stage_message($message);
     }
 
@@ -193,9 +192,9 @@ sub stage_message {
     my $self = shift;
     my ($message) = @_;
 
-    return if @{$self->{messages}} >= $self->{max_messages_to_stage};
+    return if @{ $self->{messages} } >= $self->{max_messages_to_stage};
 
-    push @{$self->{messages}}, $message;
+    push @{ $self->{messages} }, $message;
 
     return $self;
 }
@@ -203,20 +202,20 @@ sub stage_message {
 sub has_staged_messages {
     my $self = shift;
 
-    return @{$self->{messages}} > 0;
+    return @{ $self->{messages} } > 0;
 }
 
 sub staged_message {
     my $self = shift;
 
-    return shift @{$self->{messages}};
+    return shift @{ $self->{messages} };
 }
 
 sub send_broadcast {
     my $self = shift;
     my ($message) = @_;
 
-    foreach my $conn (PPush::Pool->connections) {
+    foreach my $conn ( PPush::Pool->connections ) {
         next if $conn->id eq $self->id;
         next unless $conn->is_connected;
 
@@ -231,7 +230,7 @@ sub send_id_message {
 
     my $message = $self->build_id_message;
 
-    $self->on('write')->($self, $message);
+    $self->on('write')->( $self, $message );
 
     return $self;
 }
@@ -239,21 +238,20 @@ sub send_id_message {
 sub build_id_message {
     my $self = shift;
 
-    return $self->build_message($self->id);
+    return $self->build_message( $self->id );
 }
 
 sub build_message {
     my $self = shift;
     my ($message) = @_;
 
-    if (ref $message) {
+    if ( ref $message ) {
         $message = '~j~' . JSON::encode_json($message);
-    }
-    else {
-        $message = Encode::encode('UTF-8', $message);
+    } else {
+        $message = Encode::encode( 'UTF-8', $message );
     }
 
-    return '~m~' . length(Encode::decode('UTF-8', $message)) . '~m~' . $message;
+    return '~m~' . length( Encode::decode( 'UTF-8', $message ) ) . '~m~' . $message;
 }
 
 sub _generate_id {
@@ -261,8 +259,15 @@ sub _generate_id {
 
     my $string = '';
 
-    for (1 .. 16) {
-        $string .= int(rand(10));
+    my $length = 32;
+
+    for ( my $i = 0 ; $i < $length ; ) {
+        my $j = chr( int( rand(127) ) );
+
+        if ( $j =~ /[a-zA-Z0-9]/ ) {
+            $string .= $j;
+            $i++;
+        }
     }
 
     return $string;
@@ -271,28 +276,28 @@ sub _generate_id {
 sub _parse_data {
     my $self = shift;
 
-    if ($self->{data} =~ s/^~m~(\d+)~m~//) {
+    print STDERR $self->{data}."\n";
+
+    if ( $self->{data} =~ s/^~m~(\d+)~m~// ) {
         my $length = $1;
 
-        my $message = substr($self->{data}, 0, $length, '');
-        if (length($message) == $length) {
-            if ($message =~ m/^~h~(\d+)/) {
+        my $message = substr( $self->{data}, 0, $length, '' );
+        if ( length($message) == $length ) {
+            if ( $message =~ m/^~h~(\d+)/ ) {
                 my $heartbeat = $1;
 
                 return $self->_parse_data;
-            }
-            elsif ($message =~ m/^~j~(.*)/) {
+            } elsif ( $message =~ m/^~j~(.*)/ ) {
                 my $json;
 
                 try {
-                    $json = JSON::decode_json(Encode::encode('UTF-8', $1));
+                    $json = JSON::decode_json( Encode::encode( 'UTF-8', $1 ) );
                 };
 
                 return $json if defined $json;
 
                 return $self->_parse_data;
-            }
-            else {
+            } else {
                 return $message;
             }
         }

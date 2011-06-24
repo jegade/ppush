@@ -11,7 +11,7 @@ sub dispatch {
     my $self = shift;
     my ($env, $cb) = @_;
 
-    my $transport = PPush::Transport->new( env => $enc ) ;
+    my $transport = PPush::Transport->new( env => $env ) ;
     return unless $transport;
     return $transport->dispatch($cb);
 
