@@ -34,6 +34,8 @@ sub new {
     return $self;
 }
 
+sub req { shift->{req} }
+
 sub is_connected { $_[0]->{is_connected} }
 
 sub connecting {
