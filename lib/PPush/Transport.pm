@@ -181,10 +181,6 @@ sub _build_handle {
     return PPush::Handle->new(@_);
 }
 
-sub DESTROY {
-    warn "I am destroyed";
-}
-
 1;
 __END__
 

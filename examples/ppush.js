@@ -62,9 +62,9 @@ PPush.prototype = {
 
     connect: function() {
         if (this.encrypted || this.secure) {
-            var url = "wss://" + PPush.host + ":" + PPush.wss_port + this.path;
+            var url = "wss://" + this.server + ":" + this.wss_port + this.path;
         } else {
-            var url = "ws://" + PPush.host + ":" + PPush.ws_port + this.path;
+            var url = "ws://" + this.server + ":" + this.ws_port + this.path;
         }
 
         PPush.allow_reconnect = true;
@@ -304,9 +304,6 @@ PPush.VERSION = "1.8.5";
 PPush.log = function(m) {
     console.log(m);
 };
-PPush.host = "192.168.178.200";
-PPush.ws_port = 8001;
-PPush.wss_port = 443;
 PPush.connection_timeout = 5000;
 PPush.cdn_http = 'http://dev.nacworld.net:8000/static/js'
 PPush.cdn_https = 'https://d3ds63zw57jt09.cloudfront.net/'

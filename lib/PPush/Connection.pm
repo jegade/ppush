@@ -105,6 +105,8 @@ sub disconnected {
     $self->{disconnect_timer} = AnyEvent->timer(
         after => 0,
         cb    => sub {
+
+            delete $self->{disconnect_timer};
             $self->on('disconnect')->($self);
         }
     );
@@ -253,6 +255,7 @@ sub build_message {
 =cut
 
 sub _generate_id {
+    
     my $self = shift;
 
     my $string = '';
@@ -260,6 +263,7 @@ sub _generate_id {
     my $length = 16;
 
     for ( my $i = 0 ; $i < $length ; ) {
+        
         my $j = chr( int( rand(127) ) );
 
         if ( $j =~ /[a-zA-Z0-9]/ ) {
@@ -271,10 +275,6 @@ sub _generate_id {
     return $string;
 }
 
-sub DESTROY {
-    
-    print "I am destroyed";
-}
 
 1;
 __END__

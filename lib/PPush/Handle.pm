@@ -14,7 +14,7 @@ sub new {
     my $self = { handle => AnyEvent::Handle->new( fh => $fh ) };
     bless $self, $class;
 
-    $self->{heartbeat_timeout} ||= 10;
+    $self->{heartbeat_timeout} ||= 30;
 
     $fh->autoflush;
 
@@ -129,10 +129,6 @@ sub close {
     );
 
     return $self;
-}
-
-sub DESTROY {
-    warn "I am destroyed";
 }
 
 1;
