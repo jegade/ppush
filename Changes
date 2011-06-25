@@ -1,25 +1,5 @@
-Revision history for perl module PocketIO
+Revision history for perl module PPush
 
-0.009004
+0.009000 2011-06-23
 
- - Renamed to PocketIO
- - Implemented as a Plack app instead of middleware
- - Fixed UTF issues
-
-0.009003
-
- - It is possible to pass class name or instance and method instead of inline
-   handler
- - Added heartbeat to WebSockets too
-
-0.009002 2011-03-29
-
- - Fixed live tests
-
-0.009001 2011-03-28
-
- - Fixed dependencies list
-
-0.009000 2011-03-16
-
- - Initial release
+ - Initial release, based on PocketIO
