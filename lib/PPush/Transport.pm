@@ -83,7 +83,7 @@ sub dispatch {
 
                 $self->client_connected($conn);
 
-                $conn->send_id_message($conn->id);
+                $conn->send_init_message($conn->id);
             }
         );
     };

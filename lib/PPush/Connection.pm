@@ -21,9 +21,6 @@ sub new {
     $self->{connect_timeout}   ||= 15;
     $self->{reconnect_timeout} ||= 15;
 
-    $self->{max_messages_to_stage} ||= 32;
-    $self->{messages} = [];
-
     $self->{on_connect_failed}   ||= sub { };
     $self->{on_connect}          ||= sub { };
     $self->{on_reconnect}        ||= sub { };
@@ -31,8 +28,6 @@ sub new {
     $self->{on_message}          ||= sub { };
     $self->{on_disconnect}       ||= sub { };
     $self->{on_error}            ||= sub { };
-
-    $self->{data} = '';
 
     DEBUG && warn "Connection created\n";
 
@@ -105,9 +100,6 @@ sub disconnected {
     delete $self->{connect_timer};
     delete $self->{reconnect_timer};
 
-    $self->{data}     = '';
-    $self->{messages} = [];
-
     $self->{is_connected} = 0;
 
     $self->{disconnect_timer} = AnyEvent->timer(
@@ -120,13 +112,24 @@ sub disconnected {
     return $self;
 }
 
+=head2 id
+
+    get or generate and return the connection ID
+
+=cut
+
 sub id {
+
     my $self = shift;
-
     $self->{id} ||= $self->_generate_id;
-
     return $self->{id};
 }
+
+=head2 on_*
+
+    Related event handler
+
+=cut
 
 sub on_message    { shift->on( message    => @_ ) }
 sub on_disconnect { shift->on( disconnect => @_ ) }
@@ -134,6 +137,7 @@ sub on_error      { shift->on( error      => @_ ) }
 sub on_write      { shift->on( write      => @_ ) }
 
 sub on {
+
     my $self  = shift;
     my $event = shift;
 
@@ -151,108 +155,102 @@ sub on {
 }
 
 sub read {
+
     my $self = shift;
     my ($data) = @_;
 
     return $self unless defined $data;
-
-    $self->{data} .= Encode::decode( 'UTF-8', $data );
-
-    while ( my $message = $self->_parse_data ) {
-        $self->on('message')->( $self, $message );
-    }
-
+    my $datade = Encode::decode( 'UTF-8', $data );
+    my $message = JSON::decode_json( Encode::encode( 'UTF-8', $datade ) );
+    $self->on('message')->( $self, $message->{header}, $message->{data} );
     return $self;
 }
+
+=head2 send_heartbeat
+
+=cut
 
 sub send_heartbeat {
     my $self = shift;
 
     $self->{heartbeat}++;
 
-    return $self->send_message( '~h~' . $self->{heartbeat} );
+    return $self->send_message( 'heartbeat', { heartbeat => $self->{heartbeat} } );
 }
 
-sub send_message {
-    my $self = shift;
-    my ($message) = @_;
+=head2 send_message
 
-    $message = $self->build_message($message);
+=cut
+
+sub send_message {
+
+    my ( $self, $event, $message ) = @_;
+
+    my $pack = $self->build_message( $event, $message );
 
     if ( $self->on_write ) {
-        $self->on('write')->( $self, $message );
+
+        $self->on('write')->( $self, $pack );
+
     } else {
-        $self->stage_message($message);
+
+        warn "Could not write, why?";
     }
 
     return $self;
 }
 
-sub stage_message {
-    my $self = shift;
-    my ($message) = @_;
+=head2 send_broadcast
 
-    return if @{ $self->{messages} } >= $self->{max_messages_to_stage};
+    Broadcast a message to every connected client
 
-    push @{ $self->{messages} }, $message;
-
-    return $self;
-}
-
-sub has_staged_messages {
-    my $self = shift;
-
-    return @{ $self->{messages} } > 0;
-}
-
-sub staged_message {
-    my $self = shift;
-
-    return shift @{ $self->{messages} };
-}
+=cut
 
 sub send_broadcast {
     my $self = shift;
-    my ($message) = @_;
+
+    my ( $event, $message ) = @_;
 
     foreach my $conn ( PPush::Pool->connections ) {
         next if $conn->id eq $self->id;
         next unless $conn->is_connected;
 
-        $conn->send_message($message);
+        $conn->send_message( $event, $message );
     }
 
     return $self;
 }
 
-sub send_id_message {
+=head2 send_init_message
+
+=cut
+
+sub send_init_message {
+
     my $self = shift;
-
-    my $message = $self->build_id_message;
-
-    $self->on('write')->( $self, $message );
-
+    $self->send_message( 'init', {} );
     return $self;
 }
 
-sub build_id_message {
-    my $self = shift;
+=head2 build_message
 
-    return $self->build_message( $self->id );
-}
+    Pack the Message with Header and Data-Part
+
+=cut
 
 sub build_message {
-    my $self = shift;
-    my ($message) = @_;
 
-    if ( ref $message ) {
-        $message = '~j~' . JSON::encode_json($message);
-    } else {
-        $message = Encode::encode( 'UTF-8', $message );
-    }
-
-    return '~m~' . length( Encode::decode( 'UTF-8', $message ) ) . '~m~' . $message;
+    my ( $self, $event, $data ) = @_;
+    my $header = { event  => $event,  id   => $self->id };
+    my $pack   = { header => $header, data => $data };
+    return JSON::encode_json($pack);
 }
+
+=head2 _generate_id
+
+    Build a Connection-ID 32 alphanumerical chars
+
+=cut
 
 sub _generate_id {
     my $self = shift;
@@ -271,40 +269,6 @@ sub _generate_id {
     }
 
     return $string;
-}
-
-sub _parse_data {
-    my $self = shift;
-
-    print STDERR $self->{data}."\n";
-
-    if ( $self->{data} =~ s/^~m~(\d+)~m~// ) {
-        my $length = $1;
-
-        my $message = substr( $self->{data}, 0, $length, '' );
-        if ( length($message) == $length ) {
-            if ( $message =~ m/^~h~(\d+)/ ) {
-                my $heartbeat = $1;
-
-                return $self->_parse_data;
-            } elsif ( $message =~ m/^~j~(.*)/ ) {
-                my $json;
-
-                try {
-                    $json = JSON::decode_json( Encode::encode( 'UTF-8', $1 ) );
-                };
-
-                return $json if defined $json;
-
-                return $self->_parse_data;
-            } else {
-                return $message;
-            }
-        }
-    }
-
-    $self->{data} = '';
-    return;
 }
 
 1;
@@ -351,7 +315,6 @@ incapsulates all the logic for bulding and parsing Socket.IO messages.
 
 =head2 C<send_id_message>
 
-=head2 C<build_id_message>
 
 =head2 C<send_heartbeat>
 
