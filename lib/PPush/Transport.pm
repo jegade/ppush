@@ -21,14 +21,13 @@ sub new {
     my $self = bless {@_}, $class;
 
     weaken $self->{env};
-    $self->{req} = Plack::Request->new($self->{env});
+    $self->{req} = Plack::Request->new( $self->{env} );
 
     return $self;
 }
 
 sub req { shift->{req} }
 sub env { shift->{req}->{env} }
-
 
 sub dispatch {
     my $self = shift;
@@ -37,13 +36,13 @@ sub dispatch {
     my $fh = $self->req->env->{'psgix.io'};
     return unless $fh;
 
-    my $hs = Protocol::WebSocket::Handshake::Server->new_from_psgi($self->req->env);
+    my $hs = Protocol::WebSocket::Handshake::Server->new_from_psgi( $self->req->env );
     return unless $hs->parse($fh);
 
     return unless $hs->is_done;
 
     my $handle = $self->_build_handle($fh);
-    my $frame = Protocol::WebSocket::Frame->new;
+    my $frame  = Protocol::WebSocket::Frame->new;
 
     return sub {
         my $respond = shift;
@@ -52,7 +51,7 @@ sub dispatch {
             $hs->to_string => sub {
                 my $handle = shift;
 
-                my $conn = $self->add_connection(on_connect => $cb);
+                my $conn = $self->add_connection( on_connect => $cb );
 
                 my $close_cb = sub {
                     $handle->close;
@@ -61,13 +60,13 @@ sub dispatch {
                 $handle->on_eof($close_cb);
                 $handle->on_error($close_cb);
 
-                $handle->on_heartbeat(sub { $conn->send_heartbeat });
+                $handle->on_heartbeat( sub { $conn->send_heartbeat } );
 
                 $handle->on_read(
                     sub {
-                        $frame->append($_[1]);
+                        $frame->append( $_[1] );
 
-                        while (my $message = $frame->next_bytes) {
+                        while ( my $message = $frame->next_bytes ) {
                             $conn->read($message);
                         }
                     }
@@ -75,7 +74,7 @@ sub dispatch {
 
                 $conn->on_write(
                     sub {
-                        my $bytes = $self->_build_frame($_[1]);
+                        my $bytes = $self->_build_frame( $_[1] );
 
                         $handle->write($bytes);
                     }
@@ -83,7 +82,7 @@ sub dispatch {
 
                 $self->client_connected($conn);
 
-                $conn->send_init_message($conn->id);
+                $conn->send_init_message( $conn->id );
             }
         );
     };
@@ -96,18 +95,16 @@ sub _build_frame {
     return Protocol::WebSocket::Frame->new($bytes)->to_bytes;
 }
 
-
-
 sub add_connection {
     my $self = shift;
 
-    return PPush::Pool->add_connection( req => $self->{req}, @_);
+    return PPush::Pool->add_connection( req => $self->{req}, @_ );
 }
 
 sub remove_connection {
     my $self = shift;
 
-    PPush::Pool->remove_connection($_[0]);
+    PPush::Pool->remove_connection( $_[0] );
 
     return $self;
 }
@@ -150,11 +147,9 @@ sub _log_client_connected {
     return unless $logger;
 
     $logger->(
-        {   level   => 'debug',
-            message => sprintf(
-                "Client '%s' connected via websocket",
-                $conn->id
-            )
+        {
+            level   => 'debug',
+            message => sprintf( "Client '%s' connected via websocket", $conn->id )
         }
     );
 }
@@ -167,8 +162,9 @@ sub _log_client_disconnected {
     return unless $logger;
 
     $logger->(
-        {   level   => 'debug',
-            message => sprintf("Client '%s' disconnected", $conn->id)
+        {
+            level   => 'debug',
+            message => sprintf( "Client '%s' disconnected", $conn->id )
         }
     );
 }
@@ -183,6 +179,10 @@ sub _build_handle {
     my $self = shift;
 
     return PPush::Handle->new(@_);
+}
+
+sub DESTROY {
+    warn "I am destroyed";
 }
 
 1;

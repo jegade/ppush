@@ -257,7 +257,7 @@ sub _generate_id {
 
     my $string = '';
 
-    my $length = 32;
+    my $length = 16;
 
     for ( my $i = 0 ; $i < $length ; ) {
         my $j = chr( int( rand(127) ) );
@@ -269,6 +269,11 @@ sub _generate_id {
     }
 
     return $string;
+}
+
+sub DESTROY {
+    
+    warn "I am destroyed";
 }
 
 1;

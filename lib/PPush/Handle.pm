@@ -11,7 +11,7 @@ sub new {
     my $class = shift;
     my ($fh) = @_;
 
-    my $self = {handle => AnyEvent::Handle->new(fh => $fh)};
+    my $self = { handle => AnyEvent::Handle->new( fh => $fh ) };
     bless $self, $class;
 
     $self->{heartbeat_timeout} ||= 10;
@@ -19,11 +19,11 @@ sub new {
     $fh->autoflush;
 
     $self->{handle}->no_delay(1);
-    $self->{handle}->on_eof(sub   { warn "Unhandled handle eof" });
-    $self->{handle}->on_error(sub { warn "Unhandled handle error: $_[2]" });
+    $self->{handle}->on_eof( sub   { warn "Unhandled handle eof" } );
+    $self->{handle}->on_error( sub { warn "Unhandled handle error: $_[2]" } );
 
     # This is needed for the correct EOF handling
-    $self->{handle}->on_read(sub { });
+    $self->{handle}->on_read( sub { } );
 
     return $self;
 }
@@ -32,7 +32,7 @@ sub on_heartbeat {
     my $self = shift;
     my ($cb) = @_;
 
-    $self->{handle}->timeout($self->{heartbeat_timeout});
+    $self->{handle}->timeout( $self->{heartbeat_timeout} );
     $self->{handle}->on_timeout($cb);
 
     return $self;
@@ -48,7 +48,7 @@ sub on_read {
 
             $handle->push_read(
                 sub {
-                    $cb->($self, $_[0]->rbuf);
+                    $cb->( $self, $_[0]->rbuf );
                 }
             );
         }
@@ -85,7 +85,7 @@ sub on_error {
 
 sub write {
     my $self = shift;
-    my ($chunk, $cb) = @_;
+    my ( $chunk, $cb ) = @_;
 
     my $handle = $self->{handle};
     return $self unless $handle && $handle->fh;
@@ -118,15 +118,21 @@ sub close {
     $handle->on_drain;
     $handle->on_error;
 
-    $handle->on_drain(sub {
-        shutdown $_[0]->fh, 1;
-        close $handle->fh;
+    $handle->on_drain(
+        sub {
+            shutdown $_[0]->fh, 1;
+            close $handle->fh;
 
-        $_[0]->destroy;
-        undef $handle;
-    });
+            $_[0]->destroy;
+            undef $handle;
+        }
+    );
 
     return $self;
+}
+
+sub DESTROY {
+    warn "I am destroyed";
 }
 
 1;

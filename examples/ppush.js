@@ -14,11 +14,15 @@ if (typeof Function.prototype.scopedTo == 'undefined') {
     };
 };
 
-var PPush = function(application_key, options) {
+var PPush = function(server,port,secure, options) {
+
+    this.server = server;
+    this.secure = secure;
+    this.ws_port   = port;
+    this.wss_port   = port;
 
     this.options = options || {};
     this.path = '/ppush'; //?client=js&version=' + PPush.VERSION;
-    this.key = application_key;
     this._id;
     this.channels = new PPush.Channels();
     this.global_channel = new PPush.Channel('pusher_global_channel')
@@ -26,7 +30,7 @@ var PPush = function(application_key, options) {
     this.secure = false;
     this.connected = false;
     this.retry_counter = 0;
-    this.encrypted = this.options.encrypted ? true : false;
+    this.encrypted = this.secure ? true : false;
     if (PPush.isReady) this.connect();
     PPush.instances.push(this);
 
@@ -73,7 +77,7 @@ PPush.prototype = {
 
             // Timeout for the connection to handle silently hanging connections
             // Increase the timeout after each retry in case of extreme latencies
-            var timeout = PPush.connection_timeout + (self.retry_counter * 1000);
+            var timeout = PPush.connection_timeout + (self.retry_counter * 500);
             var connectionTimeout = window.setTimeout(function() {
                 PPush.debug('Connection timeout after', timeout + 'ms');
                 ws.close();
@@ -234,7 +238,7 @@ PPush.prototype = {
         }
 
         // Retry with increasing delay, with a maximum interval oPPushs
-        var retry_delay = Math.min(this.retry_counter * 1000, 10000);
+        var retry_delay = Math.min(this.retry_counter * 250, 10000);
         PPush.debug("Retrying connection in " + retry_delay + "ms");
         var self = this;
         setTimeout(function() {
