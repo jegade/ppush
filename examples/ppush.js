@@ -302,7 +302,7 @@ PPush.debug = function() {
 // PPush defaults
 PPush.VERSION = "1.8.5";
 PPush.log = function(m) {
-    console.log(m);
+    //console.log(m);
 };
 PPush.connection_timeout = 5000;
 PPush.cdn_http = 'http://dev.nacworld.net:8000/static/js'
@@ -403,7 +403,7 @@ PPush.Channel.prototype = {
 
         if (callbacks) {
             for (var i = 0; i < callbacks.length; i++) {
-                callbacks[i](event_data);
+                callbacks[i](event_data,event_header);
             }
         } else if (!this.global) {
             PPush.debug('No callbacks for ' + event_header.event);
