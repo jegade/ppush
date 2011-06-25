@@ -273,7 +273,7 @@ sub _generate_id {
 
 sub DESTROY {
     
-    warn "I am destroyed";
+    print "I am destroyed";
 }
 
 1;

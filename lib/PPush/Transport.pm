@@ -20,8 +20,8 @@ sub new {
 
     my $self = bless {@_}, $class;
 
-    weaken $self->{env};
-    $self->{req} = Plack::Request->new( $self->{env} );
+    my $env = delete $self->{env};
+    $self->{req} = Plack::Request->new( $env );
 
     return $self;
 }

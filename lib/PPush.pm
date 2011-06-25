@@ -41,8 +41,16 @@ sub _get_handler {
     my $instance = $self->instance
       || do { Plack::Util::load_class($self->class); $self->class->new; };
 
+    warn "Run instance";
+
     return $instance->run;
 }
+
+sub DESTROY {
+    
+    warn "Destroy PPush";
+}
+
 
 1;
 __END__

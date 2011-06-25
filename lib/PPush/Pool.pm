@@ -7,7 +7,7 @@ use Scalar::Util qw(blessed);
 
 use PPush::Connection;
 
-use constant DEBUG => $ENV{PPUSH_POOL_DEBUG};
+use constant DEBUG => $ENV{PPUSH_POOL_DEBUG} || 1;
 
 sub find_connection {
     my $self = shift;
