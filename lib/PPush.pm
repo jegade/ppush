@@ -64,7 +64,7 @@ PPush -Websocket Pusher
     use Plack::Builder;
 
     builder {
-        enable "PPush", handler => sub {
+        mount "PPush", handler => sub {
             my $self = shift;
 
             $self->on_message(
@@ -85,7 +85,7 @@ PPush -Websocket Pusher
     # or
 
     builder {
-        enable "PPush", class => 'MyApp::Handler', method => 'run';
+        mount "PPush", class => 'MyApp::Handler', method => 'run';
 
         $app;
     };
@@ -113,7 +113,7 @@ recommended.
 
 =item resource
 
-    enable "PPush",
+    mount "PPush",
         resource => 'socket.io', ...;
 
 Specifies the path prefix under which all the requests are handled. This is done
@@ -121,7 +121,7 @@ so the rest of your application won't interfere with Socket.IO specific calls.
 
 =item handler
 
-    enable "PPush",
+    mount "PPush",
         handler => sub {
             my $socket = shift;
 
@@ -134,12 +134,12 @@ so the rest of your application won't interfere with Socket.IO specific calls.
 
 =item class or instance, method
 
-    enable "PPush",
+    mount "PPush",
         class => 'MyHandler', method => 'run';
 
     # or
 
-    enable "PPush",
+    mount "PPush",
         instance => MyHandler->new(foo => 'bar'), method => 'run';
 
     package MyHandler;
